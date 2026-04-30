@@ -405,9 +405,16 @@ export default function App() {
           >
             <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-2 border-white/10 group bg-brand/10">
               <img 
-                src="/foto/profile.jpeg" 
+                src={`/foto/profile.jpeg?v=${Date.now()}`}
                 alt="Matheus Amado Marques" 
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  console.log('Erro ao carregar imagem, tentando fallback...');
+                  if (!target.src.includes('images.unsplash.com')) {
+                    target.src = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800';
+                  }
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-transparent to-transparent opacity-60"></div>
             </div>
