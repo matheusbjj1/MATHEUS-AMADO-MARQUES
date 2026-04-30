@@ -402,12 +402,14 @@ export default function App() {
             whileInView={{ opacity: 1, scale: 1 }}
             className="order-2 md:order-1 relative"
           >
-            <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-2 border-white/10 group">
+            <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-2 border-white/10 group bg-brand/10">
               <img 
-                src="/foto/profile.jpeg" 
+                src="./foto/profile.jpeg" 
                 alt="Especialista em Gestão Comercial" 
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800';
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-transparent to-transparent opacity-60"></div>
             </div>
