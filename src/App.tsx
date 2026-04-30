@@ -396,53 +396,30 @@ export default function App() {
 
       {/* Presentation Section (Moved Down and Updated) */}
       <section className="py-24 bg-surface border-y border-white/5 relative overflow-hidden">
-        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-          
+        <div className="max-w-4xl mx-auto px-6">
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            className="order-2 md:order-1 relative"
-          >
-            <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-2 border-white/10 group bg-slate-800 flex items-center justify-center relative">
-              <img 
-                src={`/foto/profile.jpeg?v=${Date.now()}`}
-                alt="Matheus Amado Marques" 
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                  console.error('Foto não encontrada em /foto/profile.jpeg');
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-transparent to-transparent opacity-60 pointer-events-none"></div>
-            </div>
-            {/* Experience Badge */}
-            <div className="absolute -bottom-10 -right-10 hidden lg:block p-6 card-blur rounded-2xl border border-brand/30 shadow-2xl">
-              <div className="text-4xl font-bold text-brand">+10 Anos</div>
-              <div className="text-gray-400 text-sm font-semibold uppercase tracking-wider leading-none">De Experiência de Mercado</div>
-            </div>
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            className="order-1 md:order-2"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="max-w-3xl mx-auto text-center"
           >
             <h2 className="text-sm font-bold text-brand uppercase tracking-[0.3em] mb-4">Especialista em Performance</h2>
-            <h3 className="text-4xl md:text-5xl font-bold mb-8 uppercase">
+            <h3 className="text-4xl md:text-6xl font-bold mb-8 uppercase leading-tight">
               Sua Empresa por uma <br />
               <span className="italic font-serif text-gray-400">Gestão de Vendas</span>
             </h3>
 
-            <div className="space-y-6 text-gray-400 text-lg leading-relaxed">
+            <div className="space-y-6 text-gray-400 text-lg md:text-xl leading-relaxed">
               <p>
                 Ajudo empresários a saírem da <strong className="text-white font-bold">dependência da sorte</strong> e construírem um processo de vendas previsível.
               </p>
               <p>
                 O tráfego pago até traz clientes, mas a maioria das empresas perde dinheiro porque não sabe atender, não qualifica e não faz follow-up.
               </p>
-              <p>
-                <strong className="text-brand">O problema não é falta de leads — é falta de processo.</strong>
-              </p>
+              <div className="py-6">
+                <p className="text-2xl md:text-3xl font-bold text-brand leading-tight italic">
+                  "O problema não é falta de leads — é falta de processo."
+                </p>
+              </div>
               <p>
                 Na minha consultoria, eu estruturo o seu comercial com CRM organizado, roteiro de atendimento e um processo claro para não deixar nenhuma oportunidade escapar.
               </p>
@@ -451,10 +428,15 @@ export default function App() {
               </p>
             </div>
 
-            <div className="mt-12 flex flex-wrap gap-4">
-              <div className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-bold text-gray-300">ESTRUTURAÇÃO DE CRM</div>
-              <div className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-bold text-gray-300">TREINAMENTO DE VENDAS</div>
-              <div className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-bold text-gray-300">AUDITORIA DE PROCESSOS</div>
+            <div className="mt-12 flex flex-wrap justify-center gap-4">
+              <div className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-gray-300 tracking-widest uppercase">ESTRUTURAÇÃO DE CRM</div>
+              <div className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-gray-300 tracking-widest uppercase">TREINAMENTO DE VENDAS</div>
+              <div className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-gray-300 tracking-widest uppercase">AUDITORIA DE PROCESSOS</div>
+            </div>
+
+            <div className="mt-16 inline-flex flex-col items-center p-6 bg-brand/5 rounded-3xl border border-brand/20 shadow-2xl">
+              <span className="text-5xl font-bold text-brand mb-1">10+</span>
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Anos de Experiência</span>
             </div>
           </motion.div>
 
