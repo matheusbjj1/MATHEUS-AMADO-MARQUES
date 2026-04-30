@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    // Lead Validation
+    function isValidLead(data) {
+      return data.keys().hasAll(['nome', 'telefone', 'email', 'mensagem', 'createdAt']) && 
+             data.keys().size() == 5 &&
+             data.nome is string && data.nome.size() >= 2 && data.nome.size() <= 200 &&
+             data.telefone is string && data.telefone.size() >= 8 && data.telefone.size() <= 20 &&
+             data.email is string && data.email.size() >= 5 && data.email.size() <= 100 &&
+             data.mensagem is string && data.mensagem.size() <= 500 &&
+             data.createdAt == request.time;
+    }
+
+    match /leads/{leadId} {
+      allow create: if isValidId(leadId) && isValidLead(incoming());
+      // Allow authenticated users to read and delete leads for dashboard management
+      allow list, delete: if isSignedIn();
+    }
+  }
+}
