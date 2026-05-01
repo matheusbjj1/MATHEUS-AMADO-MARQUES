@@ -5,7 +5,7 @@
 
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, Phone, Mail, User, Instagram, BookOpen, BarChart3, TrendingUp, Target, ShieldCheck, LogIn, LogOut, LayoutDashboard, X, Trash2 } from 'lucide-react';
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent, useEffect, Component, ReactNode } from 'react';
 import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { db, auth } from './lib/firebase';
@@ -30,23 +30,74 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
   const errInfo: FirestoreErrorInfo = {
     error: error instanceof Error ? error.message : String(error),
     authInfo: {
-      userId: null,
-      email: null,
+      userId: auth.currentUser?.uid || null,
+      email: auth.currentUser?.email || null,
     },
     operationType,
     path
   };
   console.error('Firestore Error: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
+  // Removed throw to prevent crashing the entire application UI
+}
+
+class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: Error | null }> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: any) {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-[#0A0F14] text-white flex items-center justify-center p-8 font-sans">
+          <div className="max-w-md w-full bg-red-900/20 border border-red-500/50 p-8 rounded-2xl shadow-2xl backdrop-blur-xl">
+            <h1 className="text-2xl font-bold text-red-500 mb-4 tracking-tight">Falha ao carregar</h1>
+            <p className="text-gray-400 mb-6 text-sm leading-relaxed">Pode haver um problema técnico impedindo o carregamento. Tente atualizar a página ou entrar em contato com o suporte.</p>
+            <div className="bg-black/40 p-4 rounded-xl border border-white/5 mb-6">
+              <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Log de Erro:</p>
+              <pre className="text-red-400/80 text-[11px] font-mono overflow-auto max-h-32">
+                {this.state.error?.message || "Erro desconhecido"}
+              </pre>
+            </div>
+            <button 
+              onClick={() => window.location.reload()}
+              className="w-full bg-red-500/20 hover:bg-red-500/30 text-red-400 py-3 rounded-xl font-bold uppercase tracking-widest text-[11px] border border-red-500/50 transition-all"
+            >
+              Recarregar Aplicação
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
 }
 
 export default function App() {
+  return (
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
+  );
+}
+
+function AppContent() {
   const [user, setUser] = useState<any>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const [authError, setAuthError] = useState('');
   const [leads, setLeads] = useState<any[]>([]);
   const [showDashboard, setShowDashboard] = useState(false);
+  const [isLoadingLeads, setIsLoadingLeads] = useState(false);
 
   const [formData, setFormData] = useState({
     nome: '',
@@ -59,27 +110,18 @@ export default function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      if (!currentUser) setShowDashboard(false);
-    });
-
-    // Test connection to Firestore
-    const testConnection = async () => {
-      try {
-        const { doc, getDocFromServer } = await import('firebase/firestore');
-        await getDocFromServer(doc(db, '_connection_test_', 'ping'));
-      } catch (error: any) {
-        if (error?.message?.includes('offline') || error?.message?.includes('permission-denied')) {
-          console.warn('Firestore connectivity check: basic health check passed (denied is expected if doc doesn\'t exist)');
-        }
+      if (!currentUser) {
+        setShowDashboard(false);
+        setLeads([]);
       }
-    };
-    testConnection();
+    });
 
     return () => unsubscribe();
   }, []);
 
   useEffect(() => {
     if (user && showDashboard) {
+      setIsLoadingLeads(true);
       const q = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
       const unsubscribe = onSnapshot(q, (snapshot) => {
         const leadsData = snapshot.docs.map(doc => ({
@@ -87,7 +129,9 @@ export default function App() {
           ...doc.data()
         }));
         setLeads(leadsData);
+        setIsLoadingLeads(false);
       }, (error) => {
+        setIsLoadingLeads(false);
         handleFirestoreError(error, OperationType.LIST, 'leads');
       });
       return () => unsubscribe();
@@ -457,10 +501,11 @@ export default function App() {
                 Baixe gratuitamente o guia prático para estruturar o comercial da sua empresa e parar de depender da sorte.
               </p>
               <a 
-                href="/manual/ebook-gestao.pdf" 
-                download="Gestao-Comercial-Estruturada.pdf"
+                href={`/manual.pdf?v=2`}
+                target="_blank"
+                rel="noopener noreferrer"
+                download="Guia-Gestao-Comercial.pdf"
                 className="bg-brand text-white font-bold py-4 px-8 rounded-sm flex items-center justify-center gap-3 text-lg shadow-xl uppercase tracking-widest hover:bg-brand/90 transition-colors"
-                onClick={() => alert('Obrigado! O download do seu manual vai começar.')}
               >
                 <BookOpen className="w-6 h-6" /> BAIXAR E-BOOK GRÁTIS
               </a>
@@ -481,7 +526,6 @@ export default function App() {
         </>
       )}
 
-      {/* Footer */}
       <footer className="py-12 px-6 border-t border-white/5 text-center flex flex-col items-center gap-6">
         <div className="text-2xl font-bold tracking-tighter text-brand-gradient uppercase">Consultoria Comercial</div>
         <p className="text-gray-600 text-xs font-medium uppercase tracking-[0.2em]">&copy; {new Date().getFullYear()} Especialista em Vendas. Sua empresa em outro nível.</p>
