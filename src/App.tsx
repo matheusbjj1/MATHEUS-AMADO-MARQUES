@@ -489,7 +489,7 @@ function AppContent() {
               <div className="absolute -inset-4 bg-brand/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
               <div className="relative aspect-[4/5] md:aspect-[3/4] overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
                 <img 
-                  src="/foto/profile.jpeg" 
+                  src="/profile.jpeg" 
                   alt="Especialista em Performance" 
                   className="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                 />
