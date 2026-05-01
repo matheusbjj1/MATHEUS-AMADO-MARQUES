@@ -18,12 +18,9 @@ async function startServer() {
     const filePath = fs.existsSync(publicPath) ? publicPath : distPath;
 
     if (fs.existsSync(filePath)) {
-      const stat = fs.statSync(filePath);
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Length', stat.size);
-      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-      res.setHeader('Pragma', 'no-cache');
-      res.setHeader('Expires', '0');
+      res.setHeader('Content-Disposition', 'inline; filename="manual.pdf"');
+      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
       res.sendFile(filePath);
     } else {
       res.status(404).send("PDF não encontrado no servidor - Verifique se o arquivo manual.pdf está na pasta public");

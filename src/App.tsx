@@ -5,7 +5,7 @@
 
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, Phone, Mail, User, Instagram, BookOpen, BarChart3, TrendingUp, Target, ShieldCheck, LogIn, LogOut, LayoutDashboard, X, Trash2 } from 'lucide-react';
-import { useState, FormEvent, useEffect, Component, ReactNode } from 'react';
+import React, { useState, FormEvent, useEffect, Component, ReactNode } from 'react';
 import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { db, auth } from './lib/firebase';
@@ -40,13 +40,16 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
   // Removed throw to prevent crashing the entire application UI
 }
 
-class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: Error | null }> {
-  constructor(props: { children: ReactNode }) {
+class ErrorBoundary extends React.Component<any, any> {
+  public state: any;
+  public props: any;
+
+  constructor(props: any) {
     super(props);
     this.state = { hasError: false, error: null };
   }
 
-  static getDerivedStateFromError(error: Error) {
+  static getDerivedStateFromError(error: Error): { hasError: boolean; error: Error } {
     return { hasError: true, error };
   }
 
@@ -440,50 +443,70 @@ function AppContent() {
 
       {/* Presentation Section (Moved Down and Updated) */}
       <section className="py-24 bg-surface border-y border-white/5 relative overflow-hidden">
-        <div className="max-w-4xl mx-auto px-6">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="max-w-3xl mx-auto text-center"
-          >
-            <h2 className="text-sm font-bold text-brand uppercase tracking-[0.3em] mb-4">Especialista em Performance</h2>
-            <h3 className="text-4xl md:text-6xl font-bold mb-8 uppercase leading-tight">
-              Sua Empresa por uma <br />
-              <span className="italic font-serif text-gray-400">Gestão de Vendas</span>
-            </h3>
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              className="flex-1 text-left"
+            >
+              <h2 className="text-sm font-bold text-brand uppercase tracking-[0.3em] mb-4">Especialista em Performance</h2>
+              <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 uppercase leading-tight">
+                Sua Empresa por uma <br />
+                <span className="italic font-serif text-gray-400 text-3xl md:text-5xl">Gestão de Vendas</span>
+              </h3>
 
-            <div className="space-y-6 text-gray-400 text-lg md:text-xl leading-relaxed">
-              <p>
-                Ajudo empresários a saírem da <strong className="text-white font-bold">dependência da sorte</strong> e construírem um processo de vendas previsível.
-              </p>
-              <p>
-                O tráfego pago até traz clientes, mas a maioria das empresas perde dinheiro porque não sabe atender, não qualifica e não faz follow-up.
-              </p>
-              <div className="py-6">
-                <p className="text-2xl md:text-3xl font-bold text-brand leading-tight italic">
-                  "O problema não é falta de leads — é falta de processo."
+              <div className="space-y-6 text-gray-400 text-lg leading-relaxed">
+                <p>
+                  Ajudo empresários a saírem da <strong className="text-white font-bold">dependência da sorte</strong> e construírem um processo de vendas previsível.
+                </p>
+                <p>
+                  O tráfego pago até traz clientes, mas a maioria das empresas perde dinheiro porque não sabe atender, não qualifica e não faz follow-up.
+                </p>
+                <div className="py-4">
+                  <p className="text-xl md:text-2xl font-bold text-brand leading-tight italic">
+                    "O problema não é falta de leads — é falta de processo."
+                  </p>
+                </div>
+                <p>
+                  Na minha consultoria, eu estruturo o seu comercial com CRM organizado, roteiro de atendimento e um processo claro para não deixar nenhuma oportunidade escapar.
                 </p>
               </div>
-              <p>
-                Na minha consultoria, eu estruturo o seu comercial com CRM organizado, roteiro de atendimento e um processo claro para não deixar nenhuma oportunidade escapar.
-              </p>
-              <p className="pt-4">
-                Você para de depender do acaso e começa a bater metas com <strong className="text-white font-bold uppercase tracking-wider">consistência</strong>.
-              </p>
-            </div>
 
-            <div className="mt-12 flex flex-wrap justify-center gap-4">
-              <div className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-gray-300 tracking-widest uppercase">ESTRUTURAÇÃO DE CRM</div>
-              <div className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-gray-300 tracking-widest uppercase">TREINAMENTO DE VENDAS</div>
-              <div className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-gray-300 tracking-widest uppercase">AUDITORIA DE PROCESSOS</div>
-            </div>
+              <div className="mt-12 flex flex-wrap gap-4">
+                <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold text-gray-300 tracking-widest uppercase">ESTRUTURAÇÃO DE CRM</div>
+                <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold text-gray-300 tracking-widest uppercase">TREINAMENTO DE VENDAS</div>
+                <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold text-gray-300 tracking-widest uppercase">AUDITORIA DE PROCESSOS</div>
+              </div>
+            </motion.div>
 
-            <div className="mt-16 inline-flex flex-col items-center p-6 bg-brand/5 rounded-3xl border border-brand/20 shadow-2xl">
-              <span className="text-5xl font-bold text-brand mb-1">10+</span>
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Anos de Experiência</span>
-            </div>
-          </motion.div>
-
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              className="flex-1 relative group"
+            >
+              <div className="absolute -inset-4 bg-brand/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+              <div className="relative aspect-[4/5] md:aspect-[3/4] overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
+                <img 
+                  src="/foto/profile.jpeg" 
+                  alt="Especialista em Performance" 
+                  className="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
+                <div className="absolute bottom-6 left-6 right-6">
+                  <div className="inline-flex flex-col p-4 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10">
+                    <span className="text-3xl font-bold text-brand mb-0">10+</span>
+                    <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Anos de Experiência</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Decorative elements */}
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-brand/10 blur-2xl rounded-full"></div>
+              <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-brand/5 blur-3xl rounded-full"></div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -501,12 +524,12 @@ function AppContent() {
                 Baixe gratuitamente o guia prático para estruturar o comercial da sua empresa e parar de depender da sorte.
               </p>
               <a 
-                href={`/manual.pdf?v=4`}
+                href={`/manual.pdf?v=5`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-brand text-white font-bold py-4 px-8 rounded-sm flex items-center justify-center gap-3 text-lg shadow-xl uppercase tracking-widest hover:bg-brand/90 transition-colors"
+                className="bg-brand text-white font-bold py-4 px-8 rounded-sm flex items-center justify-center gap-3 text-lg shadow-xl uppercase tracking-widest hover:bg-brand/90 transition-colors animate-pulse hover:animate-none"
               >
-                <BookOpen className="w-6 h-6" /> BAIXAR E-BOOK GRÁTIS
+                <BookOpen className="w-6 h-6" /> BAIXAR E-BOOK AGORA
               </a>
             </div>
 
