@@ -27,6 +27,21 @@ async function startServer() {
     }
   });
 
+  // Explicit Image serving for profile.png
+  app.get("/profile.png", (req, res) => {
+    const publicPath = path.join(process.cwd(), "public", "profile.png");
+    const distPath = path.join(process.cwd(), "dist", "profile.png");
+    const filePath = fs.existsSync(publicPath) ? publicPath : distPath;
+
+    if (fs.existsSync(filePath)) {
+      res.setHeader('Content-Type', 'image/png');
+      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      res.sendFile(filePath);
+    } else {
+      res.status(404).send("Imagem não encontrada");
+    }
+  });
+
   // Serve static files from public folder
   app.use(express.static(path.join(process.cwd(), "public")));
 

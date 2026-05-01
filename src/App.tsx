@@ -489,7 +489,7 @@ function AppContent() {
               <div className="absolute -inset-4 bg-brand/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
               <div className="relative aspect-[4/5] md:aspect-[3/4] overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
                 <img 
-                  src="/profile.png" 
+                  src="/profile.png?v=6" 
                   alt="Especialista em Performance" 
                   className="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
                 />
@@ -524,7 +524,7 @@ function AppContent() {
                 Baixe gratuitamente o guia prático para estruturar o comercial da sua empresa e parar de depender da sorte.
               </p>
               <a 
-                href={`/manual.pdf?v=5`}
+                href={`/manual.pdf?v=6`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-brand text-white font-bold py-4 px-8 rounded-sm flex items-center justify-center gap-3 text-lg shadow-xl uppercase tracking-widest hover:bg-brand/90 transition-colors animate-pulse hover:animate-none"
