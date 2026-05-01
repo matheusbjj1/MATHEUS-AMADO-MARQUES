@@ -11,27 +11,31 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  // Serve static files from public folder explicitly
-  app.use(express.static(path.join(process.cwd(), "public")));
-
-  // API routes go here
-  app.get("/api/health", (req, res) => {
-    res.json({ status: "ok" });
-  });
-
-  // Explicit PDF serving for the manual
+  // Explicit PDF serving for the manual with EXTREME priority
   app.get("/manual.pdf", (req, res) => {
     const publicPath = path.join(process.cwd(), "public", "manual.pdf");
     const distPath = path.join(process.cwd(), "dist", "manual.pdf");
     const filePath = fs.existsSync(publicPath) ? publicPath : distPath;
 
     if (fs.existsSync(filePath)) {
+      const stat = fs.statSync(filePath);
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'inline; filename="manual.pdf"');
+      res.setHeader('Content-Length', stat.size);
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
       res.sendFile(filePath);
     } else {
-      res.status(404).send("Documento não encontrado");
+      res.status(404).send("PDF não encontrado no servidor - Verifique se o arquivo manual.pdf está na pasta public");
     }
+  });
+
+  // Serve static files from public folder
+  app.use(express.static(path.join(process.cwd(), "public")));
+
+  // API routes
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok" });
   });
 
   // Fallback for other PDFs if needed

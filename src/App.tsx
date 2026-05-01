@@ -501,10 +501,9 @@ function AppContent() {
                 Baixe gratuitamente o guia prático para estruturar o comercial da sua empresa e parar de depender da sorte.
               </p>
               <a 
-                href={`/manual.pdf?v=2`}
+                href={`/manual.pdf?v=4`}
                 target="_blank"
                 rel="noopener noreferrer"
-                download="Guia-Gestao-Comercial.pdf"
                 className="bg-brand text-white font-bold py-4 px-8 rounded-sm flex items-center justify-center gap-3 text-lg shadow-xl uppercase tracking-widest hover:bg-brand/90 transition-colors"
               >
                 <BookOpen className="w-6 h-6" /> BAIXAR E-BOOK GRÁTIS
